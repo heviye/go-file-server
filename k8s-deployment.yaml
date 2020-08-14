@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: go-file-server 
+  namespace: services
+spec:
+  template:
+    metadata:
+      labels:
+        app: go-file-server 
+    spec:
+      imagePullSecrets:
+        - name: myaliyunregistrykey
+      containers:
+        - image: registry.cn-shenzhen.aliyuncs.com/hevi/go-file-server:v1.0.2
+          name: app
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - mountPath: /mov
+              name: mov-path
+          ports:
+            - containerPort: 8080
+      volumes:
+        - name: mov-path
+          hostPath:
+            path: /home/mov
+            type: Directory
+  selector:
+    matchLabels:
+      app: go-file-server
+  replicas: 1
+
+
